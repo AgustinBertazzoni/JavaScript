@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="assets/normalize.min.css" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/extra.css" />
+    <title>Aprender a programar con JavaScript</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="ejercicio_1.html" class="active">Ejercicio 1</a>
+        <a href="ejercicio_2.html">Ejercicio 2</a>
+        <a href="ejercicio_3.html">Ejercicio 3</a>
+        <a href="ejercicio_4.html">Ejercicio 4</a>
+        <a href="ejercicio_5.html">Ejercicio 5</a>
+        <a href="ejercicio_6.html">Ejercicio 6</a>
+        <a href="ejercicio_7.html">Ejercicio 7</a>
+      </nav>
+    </header>
+
+    <section>
+      <h1>Aprender a programar con JavaScript</h1>
+    </section>
+
+    <aside>
+      <p>Crear un "asistente" que pida los siguientes datos de un producto:</p>
+      <ul>
+        <li>Nombre</li>
+        <li>Stock</li>
+        <li>Precio</li>
+        <li>Disponibilidad</li>
+      </ul>
+      <p>
+        Validar que cada dato ingresado resulte "correcto" según su naturaleza.
+      </p>
+      <p>
+        Mostrar un mensaje en el <code>&lt;article&gt;</code> que indique el
+        cuanto valen y cuantas unidades hay de ese producto.
+      </p>
+      <article></article>
+    </aside>
+    <script src="../CrossFitJS/validador.js"></script>
+
+    <script>
+      /*
+            //Valores determinados
+
+            let nombre = "cafe"; //string: valores alfanumericos
+            let stock = 300; //int: numeros enteros
+            let precio = 125.75; //Float: numeros con decimales
+            let disponible = true; //Bool: valores True or False
+
+            //Valores indeterminados
+            // 1) determinado por una operacion logico-matematica
+
+            let precioFinal = precio * 1.21;
+
+            // 2) determinado por una operacion del usuario
+
+            let usuario = prompt("Ingrese su nombre");
+
+            console.log(precioFinal);console.log("Usted ingreso estos datos:")
+      	  */
+
+      //1- Ingreso de datos
+      let nombre = prompt("Ingrese nombre:");
+      let stock = prompt("Ingrese stock:");
+      let precio = prompt("Ingrece precio");
+      let disponible = confirm("Esta disponible?");
+
+      //2- Validacion de datos
+      stock = parseInt(stock);
+      precio = parseFloat(precio);
+
+      console.log("Usted ingreso estos datos:");
+      console.log(nombre);
+      console.log(stock);
+      console.log(precio);
+      console.log(disponible);
+
+      if (
+        nombre == "" ||
+        nombre == null ||
+        nombre == undefined ||
+        !isNaN(nombre)
+      ) {
+        alert("ERROR");
+      }
+
+      if (isNaN(stock) || stock < 0 || stock > 1000) {
+        alert("Error, ingrese un stock valido");
+      }
+
+      while (isNaN(precio) || precio < 0) {
+        alert("ERROR, ingrese un precio valido");
+        precio = prompt("Reingrese precio (solo numeros)");
+      }
+
+      if (disponible == undefined) {
+        alert("Error, debe especificar la disponibilidad");
+      }
+
+      let mensaje = `Hay ${stock} unidades de ${nombre} que valen ${precio} pesos`;
+
+      //Manipulando el DOM
+      document.querySelector("article").innerText = mensaje;
+    </script>
+  </body>
+</html>
