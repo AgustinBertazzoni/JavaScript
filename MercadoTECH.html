@@ -47,15 +47,50 @@
     src="https://blackrockdigital.github.io/startbootstrap-shop-item/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="producto.class.js"></script>
   <script>
+
+    // TODO LO COMENTADO SON OTRAS FORMAS DE HACERLO Y EJEMPLOS
+
+    /*
     let elProducto = new Producto("iPhone SE", 500, 499.99, "http://lorempixel.com/480/320/technics/", "Apple") //<-- Instanciacion de un objeto "Producto"
     let elOtroProducto = new Producto("Galaxy Note 8", 750, 699.99, "https://picsum.photos/480/320/", "Samsung")
+    let unTercerProducto = new Producto("iPad Mini", 650, 999.99, "https://picsum.photos/480/320/", "Apple")
+    let unCuartoProducto = new Producto("Surface", 300, 1299.99, "http://lorempixel.com/480/320/people/", "Microsoft")
     let elUltimoProducto = new Producto("Moto G 7gen", 600, 399.99, "http://lorempixel.com/480/320/people/", "Motorola")
 
     elOtroProducto.Descuento("UH7XTU78I")
 
-    elProducto.Mostrar()
-    elOtroProducto.Mostrar()
-    elUltimoProducto.Mostrar()
+    let listado = [elProducto, elOtroProducto, unTercerProducto, unCuartoProducto, elUltimoProducto]
+    */
+
+
+    // Traerlos datos desde archivo remoto/externo
+
+
+
+
+    // Para traer los datos  de un archivo remoto
+    fetch("https://api.npoint.io/6b51ed82842567c3a283").then(function (rta) {                       //una vez que cargan, ENTONCES hacer algo
+      return rta.json()        //decirle a js que lo que respondio esta en json (convierte datos a objetos) // SIEMPRE se aclara, sino el lenguaje no sabe que le estas pasando
+    }).then(function (productos) {
+      productos.forEach(function ({ Nombre, Stock, Precio, Imagen, Marca }) {
+        let superProducto = new Producto(Nombre, Stock, Precio, Imagen, Marca)
+        superProducto.Mostrar()
+      })
+    })
+
+
+    /*
+        elProducto.Mostrar()
+        elOtroProducto.Mostrar()
+        elUltimoProducto.Mostrar()
+        unTercerProducto.Mostrar()
+        unTercerProducto.Mostrar()
+        */
+
+    /*listado.forEach(function (producto) {
+      producto.Mostrar()
+    })
+    */
 			/////////////////////////////////////////////////
 			//De Federico Brusa para todos:  09:52 PM
 			//que es json??
