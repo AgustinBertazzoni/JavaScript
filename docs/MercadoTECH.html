@@ -69,104 +69,37 @@
 
 
     // Para traer los datos  de un archivo remoto
+
+    let productos = null
+
+
     fetch("https://api.npoint.io/6b51ed82842567c3a283").then(function (rta) {                       //una vez que cargan, ENTONCES hacer algo
+
       return rta.json()        //decirle a js que lo que respondio esta en json (convierte datos a objetos) // SIEMPRE se aclara, sino el lenguaje no sabe que le estas pasando
+
+    }).then(function (objetos) {
+
+      //Coleccion de objetos de tipo Proucto
+
+      productos = objetos.map(
+        ({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca)
+      )
+
+      return productos
+
     }).then(function (productos) {
-      productos.forEach(function ({ Nombre, Stock, Precio, Imagen, Marca }) {
-        let superProducto = new Producto(Nombre, Stock, Precio, Imagen, Marca)
-        superProducto.Mostrar()
+
+      let mayorTrescientos = productos.filter(producto => producto.precio > 300)
+
+      return mayorTrescientos
+    }).then(function (productos) {
+
+      //Mostrar todos los productos de una
+
+      productos.forEach(producto => {
+        producto.Mostrar()
       })
-    })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    });
 
 
 
