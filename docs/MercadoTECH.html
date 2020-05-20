@@ -32,6 +32,11 @@
   </header>
   <main class="container">
     <h2 class="w-100 my-3 p-3 border">&#x2B50; Productos Destacados</h2>
+    <nav id="filtros">
+      <button class="btn btn-primary" data-min="0" data-max="500"> 0 - 500</button>
+      <button class="btn btn-primary" data-min="500" data-max="1500">500 - 1500</button>
+      <button class="btn btn-primary" data-min="1500" data-max="999999">+ 1500 </button>
+    </nav>
     <!-- AREA PRODUCTOS DESTACADOS -->
     <section id="productos-destacados" class="row py-3">
 
@@ -140,6 +145,16 @@
       })
     }
     /////////////////////////////////
+
+    document.querySelectorAll("#filtros button").forEach((filtro) => {
+      filtro.onclick = (evento) => {
+        let rango = {
+          min: evento.target.getAttribute("data.min"),
+          max: evento.target.getAttribute("data.max")
+        }
+      }
+    })
+
     window.onload = async () => {
 
       let objetos = await GET("https://api.npoint.io/6b51ed82842567c3a283")

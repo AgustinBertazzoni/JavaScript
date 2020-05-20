@@ -35,7 +35,7 @@ class Producto {
 
     /////////////////////////////////////////////
 
-    static armarCatalogo(objetos) { // Metodos de clase (o estatico)
+    static armarCatalogo(objetos, rango) { // Metodos de clase (o estatico)
         let productos = objetos.map(({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca))
 
         let resultado = productos.filter(producto => producto.precio > 249 && producto.stock > 100)
