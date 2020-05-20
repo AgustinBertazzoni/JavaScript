@@ -132,25 +132,26 @@
       let rta = await fetch(url)
       return await rta.json() //<-- Retornar convertido de JSON a Objetos genericos
     }
-    const armarCatalogo = async (max) => {
 
-      let objetos = await GET("productos.json")
 
-      let productos = objetos.map(({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca))
-
-      let resultado = productos.filter(producto => producto.precio > 249 && producto.stock > 100)
-
-      return resultado
+    function aguanta(timeout) {
+      return new Promise(function (resolve, reject) {
+        window.setTimeout(resolve, timeout)
+      })
     }
     /////////////////////////////////
     window.onload = async () => {
 
-      let catalogo = await armarCatalogo()
+      let objetos = await GET("https://api.npoint.io/6b51ed82842567c3a283")
+
+      let catalogo = await Producto.armarCatalogo(objetos)  // Funciones dentro de clases
 
       if (catalogo instanceof Array) { //<-- Si el resultado es una array
 
-        catalogo.forEach(producto => {
+        catalogo.forEach(async producto => {
+          await aguanta(3000)
           producto.Mostrar()
+
         })
 
       } else {
