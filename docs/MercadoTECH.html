@@ -36,6 +36,7 @@
       <button class="btn btn-primary" data-min="0" data-max="500"> 0 - 500</button>
       <button class="btn btn-primary" data-min="500" data-max="1500">500 - 1500</button>
       <button class="btn btn-primary" data-min="1500" data-max="999999">+ 1500 </button>
+      <button class="btn btn-primary" data-min="0" data-max="999999">Todos</button>
     </nav>
     <!-- AREA PRODUCTOS DESTACADOS -->
     <section id="productos-destacados" class="row py-3">
@@ -53,81 +54,7 @@
   <script src="producto.class.js"></script>
   <script>
 
-    // TODO LO COMENTADO SON OTRAS FORMAS DE HACERLO Y EJEMPLOS
 
-    /*
-    let elProducto = new Producto("iPhone SE", 500, 499.99, "http://lorempixel.com/480/320/technics/", "Apple") //<-- Instanciacion de un objeto "Producto"
-    let elOtroProducto = new Producto("Galaxy Note 8", 750, 699.99, "https://picsum.photos/480/320/", "Samsung")
-    let unTercerProducto = new Producto("iPad Mini", 650, 999.99, "https://picsum.photos/480/320/", "Apple")
-    let unCuartoProducto = new Producto("Surface", 300, 1299.99, "http://lorempixel.com/480/320/people/", "Microsoft")
-    let elUltimoProducto = new Producto("Moto G 7gen", 600, 399.99, "http://lorempixel.com/480/320/people/", "Motorola")
-
-    elOtroProducto.Descuento("UH7XTU78I")
-
-    let listado = [elProducto, elOtroProducto, unTercerProducto, unCuartoProducto, elUltimoProducto]
-    */
-
-    // MANERA DE HACER ANTES DE ARROW FUNCTION
-    /*
-        let productos = null
-    
-    
-        fetch("https://api.npoint.io/6b51ed82842567c3a283").then(function (rta) {                       //una vez que cargan, ENTONCES hacer algo
-    
-          return rta.json()        //decirle a js que lo que respondio esta en json (convierte datos a objetos) // SIEMPRE se aclara, sino el lenguaje no sabe que le estas pasando
-    
-        }).then(function (objetos) {
-    
-          //Coleccion de objetos de tipo Proucto
-    
-          productos = objetos.map(
-            ({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca)
-          )
-    
-          return productos
-    
-        }).then(function (productos) {
-    
-          let mayorTrescientos = productos.filter(producto => producto.precio > 300)
-    
-          return mayorTrescientos
-        }).then(function (productos) {
-    
-          //Mostrar todos los productos de una
-    
-          productos.forEach(producto => {
-            producto.Mostrar()
-          })
-        });
-    
-        */
-
-
-
-    // Fetch con .then
-
-    /*
-    
-        fetch("https://api.npoint.io/6b51ed82842567c3a283")
-          .then(rta => rta.json())
-          .then(objetos => objetos.map(({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca)))
-          .then(productos => productos.filter(producto => producto.precio > 249 && producto.stock > 100))
-          .then(resultado => {
-            // Mostrar todos los productos...
-            if (resultado instanceof Array) { //<-- Si el resultado es una array
-    
-              resultado.forEach(producto => {
-                producto.Mostrar()
-              })
-    
-            } else {
-              resultado.Mostrar()
-            }
-          })
-    
-          */
-
-    ////////////////////////////////
 
     // ESMAScript 2017 - Funciones asincronicas
 
@@ -138,86 +65,73 @@
       return await rta.json() //<-- Retornar convertido de JSON a Objetos genericos
     }
 
-
-    function aguanta(timeout) {
-      return new Promise(function (resolve, reject) {
-        window.setTimeout(resolve, timeout)
-      })
+    const aguanta = timeout => { //aguanta(3000)
+      return new Promise(resolve => setTimeout(resolve, timeout))
     }
-    /////////////////////////////////
 
-    document.querySelectorAll("#filtros button").forEach((filtro) => {
-      filtro.onclick = (evento) => {
-        let rango = {
-          min: evento.target.getAttribute("data.min"),
-          max: evento.target.getAttribute("data.max")
-        }
+    const mostrarCatalogo = async (rango) => {
+
+      let objetos = null
+
+      if (!localStorage.getItem("CATALOGO")) {
+
+        objetos = await GET("https://api.npoint.io/6b51ed82842567c3a283")  //Si no hay un localStorage
+
+        localStorage.setItem("CATALOGO", JSON.stringify(objetos)) // convierte los datos guardados en json, como los sube
+
+      } else { //Si hay un localstorage
+
+        objetos = JSON.parse(localStorage.getItem("CATALOGO"))
+
       }
-    })
 
-    window.onload = async () => {
-
-      let objetos = await GET("https://api.npoint.io/6b51ed82842567c3a283")
-
-      let catalogo = await Producto.armarCatalogo(objetos)  // Funciones dentro de clases
+      let catalogo = await Producto.armarCatalogo(objetos, rango)
 
       if (catalogo instanceof Array) { //<-- Si el resultado es una array
 
         catalogo.forEach(async producto => {
-          await aguanta(3000)
+          //await aguanta(3000)
           producto.Mostrar()
 
         })
-
-      } else {
-        catalogo.Mostrar()
       }
-
     }
 
+    /////////////////////////////////
 
-
-
-    /*
-        elProducto.Mostrar()
-        elOtroProducto.Mostrar()
-        elUltimoProducto.Mostrar()
-        unTercerProducto.Mostrar()
-        unTercerProducto.Mostrar()
-        */
-
-    /*listado.forEach(function (producto) {
-      producto.Mostrar()
+    document.querySelectorAll("#filtros button").forEach(filtro => {
+      filtro.onclick = evento => {
+        let rango = {
+          min: evento.target.getAttribute("data-min"),
+          max: evento.target.getAttribute("data-max")
+        }
+        document.querySelector("#productos-destacados").innerHTML = null
+        mostrarCatalogo(rango)
+      }
     })
-    */
-			/////////////////////////////////////////////////
-			//De Federico Brusa para todos:  09:52 PM
-			//que es json??
 
-			//JavaScript Object Notation - JSON
-			//(Notacion de Objetos de JavaScript)
-    /*
-    {
-      "nombre" : "Cafe",
-      "precio" : 45.63,
-      "stock" : 450,
-      "disponible" : false
-    }
-    */
-			//CSV - Valores separados por comas
-			//cafe,300,45.65,false
-			//jugo,500,56.78,true
-			//agua,600.67.89,false
+    mostrarCatalogo()
 
-			//XML - Lenguaje de Marcado Extendible
+
+    ///////////////////////
+
+    //Storage
+
+    //Window.sessionStorage & //Window.localStorage
+
+    //La diferencia es que local, es donde esta la sesion. y session es cuando cierra la ventana, se va
+
     /*
-    <producto>
-      <nombre>Cafe</nombre>
-      <precio>85.69</precio>
-      <stock>850</stock>
-      <disponible>false</disponible>
-    </producto>
+    localStorage.setItem()
+    localStorage.getItem()
+    localStorage.removeItem()
+    localStorage.clear()
     */
+
+    //localStorage.setItem("usuario", "smessina")     Crea y actualiza el dato
+    //localStorage.getItem("usuario")    Usa el dato (string, if, para lo que sea)
+    //localStorage.removeItem("usuario")     Borra el storage (usuario) (cuando queremos que los datos desaparezca)
+    //localStorage.clear()        Borra TODOS los datos
 
   </script>
 </body>

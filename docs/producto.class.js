@@ -38,7 +38,11 @@ class Producto {
     static armarCatalogo(objetos, rango) { // Metodos de clase (o estatico)
         let productos = objetos.map(({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca))
 
-        let resultado = productos.filter(producto => producto.precio > 249 && producto.stock > 100)
+        // Operador Ternario
+
+        let resultado = rango ? productos.filter(producto => producto.precio > rango.min && producto.precio < rango.max)
+            : productos
+
 
         return resultado
     }
