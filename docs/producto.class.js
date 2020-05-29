@@ -10,8 +10,7 @@ class Producto {
         this.vDOM = document.createElement("article")
     }
 
-    Mostrar() { // Metodos de instancia
-
+    Mostrar() { //<-- Metodos de Instancia
 
         this.vDOM.classList.add("col-4")
 
@@ -26,65 +25,58 @@ class Producto {
                                 <button class="btn btn-primary btn-comprar float-right">Comprar</button>
                             </div>
                         </div>`
-
-        if (this.estado == false) {  // la interfaz AUN no esta anexada al DOM
+        //debugger
+        if (!this.estado) { //<-- La interfaz AUN no está anexada al DOM...
             document.querySelector("#productos-destacados").appendChild(this.vDOM)
             this.estado = true
         }
 
-
-
-
         this.vDOM.querySelector(".btn-editar").onclick = (evento) => {
-            // console.log(evento.target)  con el click en editar
+            //console.log(evento.target) //<-- El boton clickeado
 
-            this.marca = prompt("Ingrese nuevo precio:", this.marca)
+            this.marca = prompt("Ingrese nueva marca:", this.marca)
             this.nombre = prompt("Ingrese nuevo nombre:", this.nombre)
             this.stock = prompt("Ingrese nuevo stock:", this.stock)
-            this.precio = prompt("Ingrese nuevo precio:", this.precio)
-            this.imagen = prompt("Ingrese nuevo precio:", this.imagen)
+            this.precio = prompt("Ingrse nuevo precio:", this.precio)
+            this.imagen = prompt("Ingrese nueva imagen:", this.imagen)
 
             this.Mostrar()
 
-            // Enviar datos al servidor: 
+            //debugger
+            //Aca voy a enviar los nuevos datos al servidor...
+            let datos = new FormData()
+            datos.append("marca", this.marca)
+            datos.append("nombre", this.nombre)
+            datos.append("stock", this.stock)
+            datos.append("precio", this.precio)
+            datos.append("imagen", this.imagen)
 
-            let formData = new FormData()
-            formData.append("marca" this.marca)
-            formData.append("nombre" this.nombre)
-            formData.append("stock" this.stock)
-            formData.append("precio" this.precio)
-            formData.append("imagen" this.imagen)
             let config = {
-                method: "POST"
+                method: "POST",
                 headers: {
-                    "Content-Type": "aplication/x-www-form-urlencored"
-                    //"Content-Type" : "aplication/multipart-form-data"
-                }
-                body: formData
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: datos
             }
-            fetch(//webhook, config })
-                console.log(this)     // El objeto "Producto" con el que se armo la interfaz.
+            fetch("https://webhook.site/08984cf8-0c9b-4115-bad4-da50123a865c", config)
+
+            console.log(this) //<-- El objeto "Producto" con el que se armó la interfaz
         }
 
 
     }
 
-    Descuento(cupon) { // Metodo de instancia
+    Descuento(cupon) { //<-- Metodo de Instancia
         if (cupon == "UH7XTU78I") {
             this.precio -= (this.precio * 0.15)
         }
     }
+    //////////////////////////////////////////////////////////////////
+    static armarCatalogo(objetos, rango) { //<-- Metodos de Clase (o estaticos)
 
-    /////////////////////////////////////////////
-
-    static armarCatalogo(objetos, rango) { // Metodos de clase (o estatico)
         let productos = objetos.map(({ Nombre, Stock, Precio, Imagen, Marca }) => new Producto(Nombre, Stock, Precio, Imagen, Marca))
 
-        // Operador Ternario
-
-        let resultado = rango ? productos.filter(producto => producto.precio > rango.min && producto.precio < rango.max)
-            : productos
-
+        let resultado = rango ? productos.filter(producto => producto.precio > rango.min && producto.precio < rango.max) : productos  //<-- Operador ternario
 
         return resultado
     }

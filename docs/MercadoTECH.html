@@ -23,8 +23,8 @@
           <li class="nav-item">
             <a id="login" class="nav-link" href="#">&#x1F512; Ingresar</a>
           </li>
-          <li class="nav-item d-none">
-            <a id="logout" class="nav-link" href="#">Bienvenid@ <span>{{USUARIO}}</span> [x]</a>
+          <li class="nav-item ">
+            <a id="logout" class="nav-link d-none" href="#">Bienvenid@ <span>{{USUARIO}}</span> [x]</a>
           </li>
         </ul>
       </nav>
@@ -51,9 +51,60 @@
   <script src="https://blackrockdigital.github.io/startbootstrap-shop-item/vendor/jquery/jquery.min.js"></script>
   <script
     src="https://blackrockdigital.github.io/startbootstrap-shop-item/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://apis.google.com/js/api:client.js"></script>
   <script src="producto.class.js"></script>
+
   <script>
 
+
+    // LOGIN 
+
+    gapi.load("auth2", () => {
+      let credenciales = {
+        client_id: '902634384440-v71t21nm59gvcequiaj5er8bq3f8aneu.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+      }
+      window.auth2 = gapi.auth2.init(credenciales)     // Inicializar con las credenciales asincronicamente
+
+      window.auth2.then(() => {
+        if (window.auth2.isSignedIn.get()) {  //Si ya esta logeado
+          Welcome()
+        } else {
+          console.log("No gil")
+        }
+      })
+    })
+
+    // Boton login
+
+    document.querySelector("#login").onclick = e => {
+      e.preventDefault()
+
+      window.auth2.signIn().then(Welcome)
+    }
+
+
+    // Boton Logout
+
+    document.querySelector("#logout").onclick = e => {
+      e.preventDefault()
+      window.auth2.signOut()
+      document.querySelector("#login").classList.remove("d-none")
+      document.querySelector("#logout").classList.add("d-none")
+    }
+
+
+    // Bienvenida 
+
+    const Welcome = () => {
+      window.user = window.auth2.currentUser.get().getBasicProfile()
+
+      document.querySelector("#logout span").innerText = window.user.getName()
+
+      document.querySelector("#login").classList.add("d-none")
+      document.querySelector("#logout").classList.remove("d-none")
+
+    }
 
 
     // ESMAScript 2017 - Funciones asincronicas
