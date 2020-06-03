@@ -4,6 +4,8 @@ const server = express()
 
 const docs = express.static("docs")
 
+const port = process.env.PORT || 2000   //Port = puerto
+
 server.use(docs)
 
 server.get("/ofertas.html", function (request, response) {
@@ -14,4 +16,4 @@ server.post("/enviar", function (req, res) {
     res.end("Aca debo ver el enviar los datos del formulario")
 })
 
-server.listen(2000) 
+server.listen() 
