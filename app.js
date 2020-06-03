@@ -4,7 +4,7 @@ const server = express()
 
 const docs = express.static("docs")
 
-const port = process.env.PORT || 2000   //Port = puerto
+const port = process.env.PORT || 2000
 
 server.use(docs)
 
