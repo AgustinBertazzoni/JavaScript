@@ -59,18 +59,23 @@
 
     // LOGIN 
 
+    window.auth2 = null    //Para que exista la variable auth2 cuando comienza todo
+
+
+
     gapi.load("auth2", () => {
       let credenciales = {
         client_id: '902634384440-v71t21nm59gvcequiaj5er8bq3f8aneu.apps.googleusercontent.com',
         cookiepolicy: 'single_host_origin',
       }
+
       window.auth2 = gapi.auth2.init(credenciales)     // Inicializar con las credenciales asincronicamente
 
       window.auth2.then(() => {
         if (window.auth2.isSignedIn.get()) {  //Si ya esta logeado
           Welcome()
         } else {
-          console.log("No gil")
+          console.log("No estas logueado")
         }
       })
     })
@@ -81,6 +86,7 @@
       e.preventDefault()
 
       window.auth2.signIn().then(Welcome)
+
     }
 
 
@@ -91,6 +97,12 @@
       window.auth2.signOut()
       document.querySelector("#login").classList.remove("d-none")
       document.querySelector("#logout").classList.add("d-none")
+
+      document.querySelectorAll(".btn-editar").forEach(btn => {
+        btn.classList.remove("d-block")
+        btn.classList.add("d-none")
+      })
+
     }
 
 
@@ -104,6 +116,9 @@
       document.querySelector("#login").classList.add("d-none")
       document.querySelector("#logout").classList.remove("d-none")
 
+      document.querySelectorAll(".btn-editar").forEach(btn => {
+        btn.classList.remove("d-none")
+      })
     }
 
 

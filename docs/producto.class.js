@@ -21,7 +21,7 @@ class Producto {
                             <div class="card-body">
                                 <h4 class="card-title"><a href="#">${this.marca} - ${this.nombre}</a> <span class="badge badge-pill badge-success float-right">$${parseFloat(this.precio).toFixed(2)}</span></h4>
                                 <p class="card-text">${this.stock} unid.</p>
-                                <button class="btn btn-warning btn-editar float-left">Editar</button>
+                                <button class="btn btn-warning btn-editar float-left ${(auth2 && auth2.isSignedIn.get() == true) ? "d-block" : "d-none"}">Editar</button>
                                 <button class="btn btn-primary btn-comprar float-right">Comprar</button>
                             </div>
                         </div>`
@@ -34,33 +34,44 @@ class Producto {
         this.vDOM.querySelector(".btn-editar").onclick = (evento) => {
             //console.log(evento.target) //<-- El boton clickeado
 
-            this.marca = prompt("Ingrese nueva marca:", this.marca)
-            this.nombre = prompt("Ingrese nuevo nombre:", this.nombre)
-            this.stock = prompt("Ingrese nuevo stock:", this.stock)
-            this.precio = prompt("Ingrse nuevo precio:", this.precio)
-            this.imagen = prompt("Ingrese nueva imagen:", this.imagen)
+            if (auth2.isSignedIn.get()) {    // Si estoy logueado
 
-            this.Mostrar()
 
-            //debugger
-            //Aca voy a enviar los nuevos datos al servidor...
-            let datos = new FormData()
-            datos.append("marca", this.marca)
-            datos.append("nombre", this.nombre)
-            datos.append("stock", this.stock)
-            datos.append("precio", this.precio)
-            datos.append("imagen", this.imagen)
+                // Editar Producto
+                this.marca = prompt("Ingrese nueva marca:", this.marca)
+                this.nombre = prompt("Ingrese nuevo nombre:", this.nombre)
+                this.stock = prompt("Ingrese nuevo stock:", this.stock)
+                this.precio = prompt("Ingrse nuevo precio:", this.precio)
+                this.imagen = prompt("Ingrese nueva imagen:", this.imagen)
 
-            let config = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: datos
+
+                //Volver a mostrar la interfaz
+                this.Mostrar()
+
+
+                //Enviar los nuevos datos al servidor...
+                let datos = new FormData()
+                datos.append("marca", this.marca)
+                datos.append("nombre", this.nombre)
+                datos.append("stock", this.stock)
+                datos.append("precio", this.precio)
+                datos.append("imagen", this.imagen)
+
+                let config = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: datos
+                }
+                fetch("https://webhook.site/08984cf8-0c9b-4115-bad4-da50123a865c", config)
+
+                console.log(this) //<-- El objeto "Producto" con el que se armó la interfaz
+            } else {
+                alert("Acceso denegado")
             }
-            fetch("https://webhook.site/08984cf8-0c9b-4115-bad4-da50123a865c", config)
 
-            console.log(this) //<-- El objeto "Producto" con el que se armó la interfaz
+
         }
 
 
