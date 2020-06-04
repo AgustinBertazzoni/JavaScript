@@ -8,6 +8,22 @@
   <link rel="stylesheet"
     href="https://blackrockdigital.github.io/startbootstrap-shop-item/vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://blackrockdigital.github.io/startbootstrap-shop-item/css/shop-item.css">
+  <style>
+    article {
+      opacity: 0;
+      animation: fadeIn 3s forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -23,7 +39,7 @@
           <li class="nav-item">
             <a id="login" class="nav-link" href="#">&#x1F512; Ingresar</a>
           </li>
-          <li class="nav-item ">
+          <li class="nav-item">
             <a id="logout" class="nav-link d-none" href="#">Bienvenid@ <span>{{USUARIO}}</span> [x]</a>
           </li>
         </ul>
@@ -33,14 +49,30 @@
   <main class="container">
     <h2 class="w-100 my-3 p-3 border">&#x2B50; Productos Destacados</h2>
     <nav id="filtros">
-      <button class="btn btn-primary" data-min="0" data-max="500"> 0 - 500</button>
-      <button class="btn btn-primary" data-min="500" data-max="1500">500 - 1500</button>
-      <button class="btn btn-primary" data-min="1500" data-max="999999">+ 1500 </button>
-      <button class="btn btn-primary" data-min="0" data-max="999999">Todos</button>
+      <button class="btn btn-secondary" data-min="0" data-max="999999">Todos</button>
+      <button class="btn btn-secondary" data-min="0" data-max="500">$0 - $500</button>
+      <button class="btn btn-secondary" data-min="500" data-max="1500">$500 - $1500</button>
+      <button class="btn btn-secondary" data-min="1500" data-max="999999">+ $1500</button>
     </nav>
     <!-- AREA PRODUCTOS DESTACADOS -->
     <section id="productos-destacados" class="row py-3">
 
+    </section>
+    <!-- AREA FICHA COMPLETA PRODUCTO -->
+    <section id="producto" class="row py-3 d-none">
+      <div class="col-9">
+        <div class="card">
+          <img id="producto-imagen" class="card-img-top img-fluid" src="{{IMAGEN}}" alt="">
+          <div class="card-body">
+            <h3 class="card-title" id="producto-nombre">{{NOMBRE}}</h3>
+            <h4 id="producto-precio">{{PRECIO}}</h4>
+            <p id="producto-detalle" class="card-text">{{DETALLE}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <button class="btn btn-primary btn-lg btn-block">Confirmar Compra</button>
+      </div>
     </section>
   </main>
   <footer class="py-5 bg-dark">
@@ -53,48 +85,43 @@
     src="https://blackrockdigital.github.io/startbootstrap-shop-item/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://apis.google.com/js/api:client.js"></script>
   <script src="producto.class.js"></script>
-
   <script>
-
-
-    // LOGIN 
-
-    window.auth2 = null    //Para que exista la variable auth2 cuando comienza todo
-
-
+    ////////////////////////////////////////////////////////////////
+    window.auth2 = null
 
     gapi.load("auth2", () => {
       let credenciales = {
-        client_id: '902634384440-v71t21nm59gvcequiaj5er8bq3f8aneu.apps.googleusercontent.com',
-        cookiepolicy: 'single_host_origin',
+        client_id: '909599252120-78uvnq8uts7c2da46bu4l9ouvvgcjo4j.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin'
       }
 
-      window.auth2 = gapi.auth2.init(credenciales)     // Inicializar con las credenciales asincronicamente
+      window.auth2 = gapi.auth2.init(credenciales) //<-- Inicializar con las credenciales asincronicamente...
 
-      window.auth2.then(() => {
-        if (window.auth2.isSignedIn.get()) {  //Si ya esta logeado
-          Welcome()
+      window.auth2.then(() => { //<-- Chequear si esta logeado luego de inicializar con las credenciales...
+
+        if (window.auth2.isSignedIn.get()) { //<-- Si ya está logeado...
+          welcome()
         } else {
-          console.log("No estas logueado")
+          console.log("No estas logeado :(")
         }
+
       })
+
     })
 
-    // Boton login
-
+    //Boton de Login
     document.querySelector("#login").onclick = e => {
       e.preventDefault()
 
-      window.auth2.signIn().then(Welcome)
-
+      window.auth2.signIn().then(welcome)
     }
 
-
-    // Boton Logout
-
+    //Boton de Logout
     document.querySelector("#logout").onclick = e => {
       e.preventDefault()
+
       window.auth2.signOut()
+
       document.querySelector("#login").classList.remove("d-none")
       document.querySelector("#logout").classList.add("d-none")
 
@@ -102,13 +129,10 @@
         btn.classList.remove("d-block")
         btn.classList.add("d-none")
       })
-
     }
 
-
-    // Bienvenida 
-
-    const Welcome = () => {
+    //Bienvenida
+    const welcome = () => {
       window.user = window.auth2.currentUser.get().getBasicProfile()
 
       document.querySelector("#logout span").innerText = window.user.getName()
@@ -120,51 +144,41 @@
         btn.classList.remove("d-none")
       })
     }
-
-
-    // ESMAScript 2017 - Funciones asincronicas
-
-
-
+    ///////////////////////////////////////////////////////////////
     const GET = async url => {
-      let rta = await fetch(url)
+      let rta = await fetch(url) //<-- Obtengo contenido en formato JSON
       return await rta.json() //<-- Retornar convertido de JSON a Objetos genericos
     }
-
     const aguanta = timeout => { //aguanta(3000)
       return new Promise(resolve => setTimeout(resolve, timeout))
     }
-
-    const mostrarCatalogo = async (rango) => {
-
+    const mostrarCatalogo = async rango => {
       let objetos = null
+      if (!localStorage.getItem("CATALOGO")) { //<-- Si NO hay un Local Storage ...
+        // ↓ Un Array de muchos Object
+        objetos = await GET("productos.json")
+        localStorage.setItem("CATALOGO", JSON.stringify(objetos))
 
-      if (!localStorage.getItem("CATALOGO")) {
-
-        objetos = await GET("https://api.npoint.io/6b51ed82842567c3a283")  //Si no hay un localStorage
-
-        localStorage.setItem("CATALOGO", JSON.stringify(objetos)) // convierte los datos guardados en json, como los sube
-
-      } else { //Si hay un localstorage
+      } else { //<-- Si EFECTIVAMENTE hay un Local Storage ...
 
         objetos = JSON.parse(localStorage.getItem("CATALOGO"))
 
       }
 
-      let catalogo = await Producto.armarCatalogo(objetos, rango)
+      let catalogo = Producto.armarCatalogo(objetos, rango)
 
       if (catalogo instanceof Array) { //<-- Si el resultado es una array
 
         catalogo.forEach(async producto => {
-          //await aguanta(3000)
-          producto.Mostrar()
-
+          await producto.Mostrar()
         })
+
+      } else {
+        catalogo.Mostrar()
       }
+
     }
-
     /////////////////////////////////
-
     document.querySelectorAll("#filtros button").forEach(filtro => {
       filtro.onclick = evento => {
         let rango = {
@@ -179,26 +193,18 @@
     mostrarCatalogo()
 
 
-    ///////////////////////
+    window.onpopstate = () => {
+      const catalogo = document.querySelector("#productos-destacados")
+      const ficha = document.querySelector("#producto")
 
-    //Storage
-
-    //Window.sessionStorage & //Window.localStorage
-
-    //La diferencia es que local, es donde esta la sesion. y session es cuando cierra la ventana, se va
-
-    /*
-    localStorage.setItem()
-    localStorage.getItem()
-    localStorage.removeItem()
-    localStorage.clear()
-    */
-
-    //localStorage.setItem("usuario", "smessina")     Crea y actualiza el dato
-    //localStorage.getItem("usuario")    Usa el dato (string, if, para lo que sea)
-    //localStorage.removeItem("usuario")     Borra el storage (usuario) (cuando queremos que los datos desaparezca)
-    //localStorage.clear()        Borra TODOS los datos
-
+      if (window.location.pathname == "/") {
+        catalogo.classList.remove("d-none") //<-- Visible
+        ficha.classList.add("d-none") //<-- Oculta
+      } else {
+        catalogo.classList.add("d-none") //<-- Oculto
+        ficha.classList.remove("d-none") //<-- Visible
+      }
+    }
   </script>
 </body>
 
